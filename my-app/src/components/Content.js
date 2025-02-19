@@ -9,7 +9,8 @@ export class Content extends Component {
     console.log('constructor called')
     super(props)
     this.state = {
-      isLoaded: false
+      isLoaded: false,
+      posts: [],
     }
   }
 
@@ -18,9 +19,19 @@ export class Content extends Component {
     setTimeout(() => {
       console.log('data fetched')
       this.setState({
-        isloaded: true
+        isloaded: true,
+        posts: savedPosts,
       })
     }, 2000)
+  }
+
+  handleChange = (event) => {
+    const name = event.target.value.toLowerCase()
+    const filteredPosts = savedPosts.filter((post) => 
+      post.name.toLowerCase().includes(name))
+    this.setState({
+      posts: filteredPosts,
+    })
   }
 
   render() {
@@ -29,10 +40,18 @@ export class Content extends Component {
       <div className={css.Content}>
         <div className={css.TitleBar}>
           <h1>My Photos</h1>
+          <label htmlFor='searchInput'>Search: </label>
+          <input 
+          onChange={(event) => this.handleChange(event)}
+          type='search' 
+          id='searchInput' 
+          placeholder='By Author'
+          />
+          <h4>Posts found: {this.state.posts.length}</h4>
         </div>
         <div className={css.SearchResults}>
           {this.state.isloaded ? (
-            <PostItem savedPosts={savedPosts} />
+            <PostItem savedPosts={this.state.posts} />
           ) : (
             <Loader />
           )}
