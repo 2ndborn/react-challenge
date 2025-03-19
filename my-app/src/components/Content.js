@@ -9,7 +9,7 @@ export class Content extends Component {
     console.log('constructor called')
     super(props)
     this.state = {
-      isLoaded: false,
+      isLoaded: falses,
       posts: [],
     }
   }
