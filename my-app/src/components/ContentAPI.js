@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import {savedPosts} from '../posts.json'
-import PostItem from './PostItem'
 import css from './css/Content.module.css'
 import Loader from './Loader'
 import axios from 'axios'
@@ -14,6 +12,7 @@ export class Content extends Component {
     this.state = {
       isLoaded: false,
       posts: [],
+      savedPosts: [],
     }
   }
 
@@ -24,18 +23,19 @@ export class Content extends Component {
   async fetchImages() {
     const response = await axios.get(`https://pixabay.com/api/?key=${API_KEY}&per_page=100`);
     console.log(response)
-    const fetchedPost = response.data.hit;
-    console.log(fetchedPost)
+    const fetchedPosts = response.data.hits;
+    console.log(fetchedPosts)
     this.setState({
       isLoaded: true,
-      posts: fetchedPost,
+      posts: fetchedPosts,
+      savedPosts: fetchedPosts,
     })
   }
 
   handleChange = (event) => {
     const name = event.target.value.toLowerCase()
-    const filteredPosts = savedPosts.filter((post) => 
-      post.name.toLowerCase().includes(name))
+    const filteredPosts = this.state.savedPosts.filter((post) => 
+      post.user.toLowerCase().includes(name))
     this.setState({
       posts: filteredPosts,
     })
@@ -57,7 +57,7 @@ export class Content extends Component {
           <h4>Posts found: {this.state.posts.length}</h4>
         </div>
         <div className={css.SearchResults}>
-          {this.state.isloaded ? (
+          {this.state.isLoaded ? (
             <PostItemAPI savedPosts={this.state.posts} />
           ) : (
             <Loader />
