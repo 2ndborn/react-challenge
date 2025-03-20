@@ -3,6 +3,9 @@ import {savedPosts} from '../posts.json'
 import PostItem from './PostItem'
 import css from './css/Content.module.css'
 import Loader from './Loader'
+import axios from 'axios'
+import API_KEY from '../secrets'
+import PostItemAPI from './PostItemAPI'
 
 export class Content extends Component {
   constructor(props) {
@@ -15,14 +18,18 @@ export class Content extends Component {
   }
 
   componentDidMount() {
-    console.log('getData called')
-    setTimeout(() => {
-      console.log('data fetched')
-      this.setState({
-        isloaded: true,
-        posts: savedPosts,
-      })
-    }, 2000)
+    this.fetchImages()
+  }
+
+  async fetchImages() {
+    const response = await axios.get(`https://pixabay.com/api/?key=${API_KEY}&per_page=100`);
+    console.log(response)
+    const fetchedPost = response.data.hit;
+    console.log(fetchedPost)
+    this.setState({
+      isLoaded: true,
+      posts: fetchedPost,
+    })
   }
 
   handleChange = (event) => {
@@ -51,7 +58,7 @@ export class Content extends Component {
         </div>
         <div className={css.SearchResults}>
           {this.state.isloaded ? (
-            <PostItem savedPosts={this.state.posts} />
+            <PostItemAPI savedPosts={this.state.posts} />
           ) : (
             <Loader />
           )}
