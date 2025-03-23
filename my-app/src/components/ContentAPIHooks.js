@@ -9,35 +9,34 @@ function ContentAPIHooks() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [posts, setPosts] = useState([]);
   const [savedPosts, setSavedPosts] = useState([]);
-
   useEffect(() => {
-    fetchImages()
+    fetchImages();
   }, [])
 
   const fetchImages = async () => {
     const response = await axios.get(`https://pixabay.com/api/?key=${API_KEY}&per_page=100`);
     console.log(response)
     const fetchedPosts = response.data.hits;
+    console.log(fetchedPosts)
     setIsLoaded(true)
     setPosts(fetchedPosts)
     setSavedPosts(fetchedPosts)
   }
 
-  const handleChange = (event) => {
-    const name = event.target.value.toLowerCase()
-    const filteredPosts = savedPosts.filter((post) => 
+  const handleChange = (e) => {
+    const name = e.target.value.toLowerCase()
+    const filteredPosts = savedPosts.filter((post) =>
       post.user.toLowerCase().includes(name))
     setPosts(filteredPosts)
   }
 
-  console.log('render called')
   return (
     <div className={css.Content}>
       <div className={css.TitleBar}>
         <h1>My Photos</h1>
         <label htmlFor='searchInput'>Search: </label>
         <input
-          onChange={(event) => handleChange(event)}
+          onChange={(e) => handleChange(e)}
           type='search'
           id='searchInput'
           placeholder='By Author'
